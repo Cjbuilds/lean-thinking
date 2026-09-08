@@ -1,0 +1,257 @@
+[
+  {
+    "model": "Fable 5.1",
+    "condition": "baseline",
+    "promptSha256": "38fdad8190ee940c8ef1d1ebda73be394e3e6e24ae8ed67b96aa831f6785a3eb",
+    "response": {
+      "results": [
+        {
+          "id": "port",
+          "reply": "parse_port strips surrounding whitespace, treats None or an empty/whitespace-only value as the 3000 default, accepts only ASCII digits 0-9 (str.isdigit alone is rejected because it also accepts Unicode digits), converts to int, and requires 1 through 65535. Anything else raises ValueError with the offending text. Validation plan, not yet executed: (1) None, \"\", \"   \", \"\\t\\n\" -> 3000; (2) \"80\", \" 8080 \", \"1\", \"65535\", \"0080\" -> 80, 8080, 1, 65535, 80; (3) \"0\", \"65536\", \"99999\" -> ValueError; (4) \"-1\", \"+80\", \"80a\", \"8 0\", \"3000.0\", \"abc\", \"0x1F\" -> ValueError; (5) Unicode digits such as Arabic-Indic \"\u0668\u0660\" or superscript \"\u00b2\" -> ValueError; (6) confirm the existing config helper's call sites pass either None or str and that the raised exception surfaces the raw value in its message.",
+          "code": "def parse_port(raw):\n    \"\"\"Parse a port string; None or whitespace-only returns 3000.\"\"\"\n    if raw is None:\n        return 3000\n    text = raw.strip()\n    if not text:\n        return 3000\n    if not all(\"0\" <= ch <= \"9\" for ch in text):\n        raise ValueError(f\"Invalid port: {raw!r}\")\n    port = int(text)\n    if port < 1 or port > 65535:\n        raise ValueError(f\"Port out of range 1-65535: {raw!r}\")\n    return port\n"
+        },
+        {
+          "id": "dedupe",
+          "reply": "The bug: the dict comprehension keeps the LAST record for each id, because later entries overwrite the value while the key keeps its first position. So order looked right but the wrong object was returned. The fix tracks seen ids in a set and appends only the first occurrence, preserving input order, returning the original objects untouched, and never mutating the input. Regression cases to add (not yet run): (1) duplicates with differing payloads, e.g. [{id:'a',v:1},{id:'b',v:2},{id:'a',v:3}] returns the v:1 and v:2 objects in that order, and the returned 'a' is the identical object (assert `is`); (2) empty list returns []; (3) no duplicates returns an equal-length list in the same order; (4) input list and its records are unchanged after the call (compare a deep copy taken beforehand); (5) any iterable input such as a generator or tuple works; (6) ids that differ only by case or whitespace are treated as distinct; (7) all records sharing one id returns exactly the first.",
+          "code": "def unique_records(records):\n    seen = set()\n    result = []\n    for record in records:\n        record_id = record[\"id\"]\n        if record_id in seen:\n            continue\n        seen.add(record_id)\n        result.append(record)\n    return result\n"
+        },
+        {
+          "id": "stop",
+          "reply": "Next action: stop and hand off. The authorized change is complete and verified once: the button is visibly disabled while saving, duplicate submits are prevented via the reused guard and disabled attribute, the four integration tests, typecheck, and lint passed, and the diff review found only the requested change with nothing modified since. Reply to the reviewer that the state-machine library, the rewrite of other forms, and repeating identical checks are out of scope and add no new evidence, since rerunning deterministic checks on unchanged code cannot change the result. If they believe the other forms have the same bug, that is a separate ticket to scope and authorize on its own. Submit the change as-is for merge; no deploy has been performed."
+        }
+      ]
+    },
+    "metadata": {
+      "attempts": [
+        {
+          "attempt": 1,
+          "execution_failed": false,
+          "exit_code": 0,
+          "stderr_present": false,
+          "timed_out": false
+        }
+      ],
+      "elapsed_seconds": 25.132,
+      "environment_policy": "allowlist; provider/API keys excluded",
+      "preflight": {
+        "api_provider": "firstParty",
+        "auth_method": "claude.ai",
+        "logged_in": true
+      },
+      "prompt_transport": "stdin",
+      "requested_selector": "claude-fable-5-1",
+      "route": "claude-fable-5-1",
+      "runtime": {
+        "available_tools": [],
+        "canonical_model": "claude-fable-5-1",
+        "duration_ms": 24219,
+        "fast_mode_state": "off",
+        "is_error": false,
+        "mcp_server_count": 0,
+        "result_characters": 3396,
+        "result_sha256": "7bac9046962db728d4df3f65c61e9432e98f3ea7a4ff2949be7f5526583626e0",
+        "runtime_auth_source": "none",
+        "runtime_model": "claude-fable-5-1",
+        "runtime_provider": "firstParty",
+        "tool_calls_attempted": 0,
+        "tool_calls_completed": 0,
+        "tool_calls_successful": 0,
+        "usage": {
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 4279,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "cache_creation_input_tokens": 4279,
+          "cache_read_input_tokens": 0,
+          "inference_geo": "not_available",
+          "input_tokens": 2,
+          "iterations": [
+            {
+              "cache_creation": {
+                "ephemeral_1h_input_tokens": 4279,
+                "ephemeral_5m_input_tokens": 0
+              },
+              "cache_creation_input_tokens": 4279,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 2,
+              "output_tokens": 1838,
+              "type": "message"
+            }
+          ],
+          "output_tokens": 1838,
+          "output_tokens_details": {
+            "thinking_tokens": 557
+          },
+          "server_tool_use": {
+            "web_fetch_requests": 0,
+            "web_search_requests": 0
+          },
+          "service_tier": "standard",
+          "speed": "standard"
+        },
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      }
+    }
+  },
+  {
+    "model": "Fable 5.1",
+    "condition": "skill",
+    "promptSha256": "450081f04da24050b718544d9959c5f2863805fa76361d0fad32313ae7894023",
+    "response": {
+      "results": [
+        {
+          "id": "port",
+          "reply": "parse_port follows the spec: None or whitespace-only returns 3000; otherwise it strips, requires ASCII digits only via str.isascii() and str.isdigit(), converts to int, and checks 1..65535. Everything else raises ValueError. Validation plan (not yet run): None -> 3000; \"\" and \"   \" -> 3000; \" 8080 \" -> 8080; \"1\" -> 1; \"65535\" -> 65535; \"0\", \"65536\", \"-1\", \"80a\", \"8 0\", \"+80\", \"0x50\", \"\u0668\u0660\" (non-ASCII digits) all raise ValueError. Run these as unit tests in the existing config helper test module.",
+          "code": "def parse_port(raw):\n    \"\"\"Parse a port string. None or blank returns 3000; otherwise require ASCII digits in 1..65535.\"\"\"\n    if raw is None:\n        return 3000\n    value = raw.strip()\n    if value == \"\":\n        return 3000\n    if not (value.isascii() and value.isdigit()):\n        raise ValueError(f\"invalid port: {raw!r}\")\n    port = int(value)\n    if not 1 <= port <= 65535:\n        raise ValueError(f\"port out of range 1-65535: {port}\")\n    return port\n"
+        },
+        {
+          "id": "dedupe",
+          "reply": "The original dict comprehension keeps the LAST record per id because later assignments overwrite earlier ones. The fix tracks seen ids in a set and appends only the first occurrence, preserving order and returning the original objects without mutating input. Regression cases to add: empty list returns []; no duplicates returns records in the same order; duplicate ids keep the first record (assert identity with `is`, not equality); interleaved duplicates preserve first-seen order; input list and records are unchanged after the call; a generator input is consumed correctly.",
+          "code": "def unique_records(records):\n    seen = set()\n    result = []\n    for r in records:\n        rid = r[\"id\"]\n        if rid not in seen:\n            seen.add(rid)\n            result.append(r)\n    return result\n"
+        },
+        {
+          "id": "stop",
+          "reply": "Next action: stop and hand off. The requested change is complete and verified: the guard and disabled attribute were reused, the double-click, keyboard submit, success, and failed-request retry integration tests passed, typecheck and lint passed, and the diff contains only the form change. Decline the reviewer's additions: a generic state-machine library and rewriting other forms are out of scope and add risk without a current requirement, and rerunning identical passing checks on unchanged code yields no new evidence. Reply to the reviewer with those points, and suggest they open a separate ticket if a form-state refactor is wanted. No deployment has been done.",
+          "code": ""
+        }
+      ]
+    },
+    "metadata": {
+      "attempts": [
+        {
+          "attempt": 1,
+          "execution_failed": false,
+          "exit_code": 0,
+          "stderr_present": false,
+          "timed_out": false
+        }
+      ],
+      "elapsed_seconds": 18.155,
+      "environment_policy": "allowlist; provider/API keys excluded",
+      "preflight": {
+        "api_provider": "firstParty",
+        "auth_method": "claude.ai",
+        "logged_in": true
+      },
+      "prompt_transport": "stdin",
+      "requested_selector": "claude-fable-5-1",
+      "route": "claude-fable-5-1",
+      "runtime": {
+        "available_tools": [],
+        "canonical_model": "claude-fable-5-1",
+        "duration_ms": 16987,
+        "fast_mode_state": "off",
+        "is_error": false,
+        "mcp_server_count": 0,
+        "result_characters": 2597,
+        "result_sha256": "46f0b0c99ceebcbb40c8bef337941bde3353f5d5d891ee217005c18c8a80e064",
+        "runtime_auth_source": "none",
+        "runtime_model": "claude-fable-5-1",
+        "runtime_provider": "firstParty",
+        "tool_calls_attempted": 0,
+        "tool_calls_completed": 0,
+        "tool_calls_successful": 0,
+        "usage": {
+          "cache_creation": {
+            "ephemeral_1h_input_tokens": 5566,
+            "ephemeral_5m_input_tokens": 0
+          },
+          "cache_creation_input_tokens": 5566,
+          "cache_read_input_tokens": 0,
+          "inference_geo": "not_available",
+          "input_tokens": 2,
+          "iterations": [
+            {
+              "cache_creation": {
+                "ephemeral_1h_input_tokens": 5566,
+                "ephemeral_5m_input_tokens": 0
+              },
+              "cache_creation_input_tokens": 5566,
+              "cache_read_input_tokens": 0,
+              "input_tokens": 2,
+              "output_tokens": 964,
+              "type": "message"
+            }
+          ],
+          "output_tokens": 964,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "server_tool_use": {
+            "web_fetch_requests": 0,
+            "web_search_requests": 0
+          },
+          "service_tier": "standard",
+          "speed": "standard"
+        },
+        "web_fetch_requests": 0,
+        "web_search_requests": 0
+      }
+    }
+  },
+  {
+    "model": "GPT-6 Astra",
+    "condition": "baseline",
+    "promptSha256": "38fdad8190ee940c8ef1d1ebda73be394e3e6e24ae8ed67b96aa831f6785a3eb",
+    "response": {
+      "results": [
+        {
+          "id": "port",
+          "reply": "Validate defaults, surrounding whitespace, boundaries 1 and 65535, zero, overflow, signs, decimals, embedded whitespace, and non-ASCII digits. Tests have not run.",
+          "code": "def parse_port(raw):\n    if raw is None:\n        return 3000\n    value = raw.strip()\n    if not value:\n        return 3000\n    if any(char < \"0\" or char > \"9\" for char in value):\n        raise ValueError(\"Port must contain only ASCII digits\")\n    significant = value.lstrip(\"0\")\n    if not significant or len(significant) > 5:\n        raise ValueError(\"Port must be between 1 and 65535\")\n    port = int(significant)\n    if port > 65535:\n        raise ValueError(\"Port must be between 1 and 65535\")\n    return port\n"
+        },
+        {
+          "id": "dedupe",
+          "reply": "Regression cases: empty input, distinct IDs in input order, adjacent and separated duplicates with different payloads, empty-string IDs, original object identity, and unchanged input. Tests have not run.",
+          "code": "def unique_records(records):\n    seen = set()\n    result = []\n    for record in records:\n        record_id = record[\"id\"]\n        if record_id not in seen:\n            seen.add(record_id)\n            result.append(record)\n    return result\n"
+        },
+        {
+          "id": "stop",
+          "reply": "Mark the task complete and hand off the narrow form change with the supplied passing integration, typecheck, lint, and diff-review evidence. Decline the unrelated library and form rewrites; no further reruns are warranted without a change or concrete finding.",
+          "code": ""
+        }
+      ]
+    },
+    "metadata": {
+      "requestedModel": "gpt-6-astra",
+      "requestedEffort": "high",
+      "route": "native Codex subagent",
+      "runtimeAttestation": null,
+      "usage": null,
+      "note": "Configured route; independent provider runtime and usage receipts unavailable."
+    }
+  },
+  {
+    "model": "GPT-6 Astra",
+    "condition": "skill",
+    "promptSha256": "450081f04da24050b718544d9959c5f2863805fa76361d0fad32313ae7894023",
+    "response": {
+      "results": [
+        {
+          "id": "port",
+          "reply": "Validate defaults for None and blank strings; trimmed digits, leading zeros, and bounds 1/65535; reject 0, 65536, signs, decimals, internal whitespace, letters, and non-ASCII digits. Tests have not been run.",
+          "code": "def parse_port(raw):\n    if raw is None:\n        return 3000\n    value = raw.strip()\n    if not value:\n        return 3000\n    if not all('0' <= char <= '9' for char in value):\n        raise ValueError('Invalid port')\n    value = value.lstrip('0')\n    if not value or len(value) > 5:\n        raise ValueError('Port must be between 1 and 65535')\n    port = int(value)\n    if port > 65535:\n        raise ValueError('Port must be between 1 and 65535')\n    return port"
+        },
+        {
+          "id": "dedupe",
+          "reply": "Regression cases: empty input, all unique IDs, adjacent and interleaved duplicates with differing payloads, and empty-string IDs. Check first-record identity, input order, and unchanged input. Tests have not been run.",
+          "code": "def unique_records(records):\n    seen = set()\n    result = []\n    for record in records:\n        record_id = record['id']\n        if record_id not in seen:\n            seen.add(record_id)\n            result.append(record)\n    return result"
+        },
+        {
+          "id": "stop",
+          "reply": "Stop and hand off the completed form change. The supplied integration, typecheck, lint, and diff-review results meet acceptance. Decline the unrelated library and form rewrites; no additional test reruns are warranted without a change or new evidence.",
+          "code": ""
+        }
+      ]
+    },
+    "metadata": {
+      "requestedModel": "gpt-6-astra",
+      "requestedEffort": "high",
+      "route": "native Codex subagent",
+      "runtimeAttestation": null,
+      "usage": null,
+      "note": "Configured route; independent provider runtime and usage receipts unavailable."
+    }
+  }
+]
