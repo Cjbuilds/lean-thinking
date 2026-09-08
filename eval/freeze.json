@@ -1,0 +1,7 @@
+{
+  "casesSha256": "c1fe5c7ef74dce334d396e3cd7492f06160020157ff18bc836955ccbc0899c5d",
+  "baselinePromptSha256": "38fdad8190ee940c8ef1d1ebda73be394e3e6e24ae8ed67b96aa831f6785a3eb",
+  "design": "Three bounded supplied-information tasks. One fresh call per model/condition. Final code replay and manual scope/stop review. No broad reliability or savings inference.",
+  "skillSha256": "11b893e835cbca59005521f408c3aa3282e583d15ebc0ba2f307b1468c6e546e",
+  "skillPromptSha256": "450081f04da24050b718544d9959c5f2863805fa76361d0fad32313ae7894023"
+}
