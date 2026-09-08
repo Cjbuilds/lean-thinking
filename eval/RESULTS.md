@@ -23,6 +23,7 @@ The checks cover defaults, whitespace, port boundaries, signs, non-ASCII digits,
 ## Observed use for the whole three-task batch
 
 | Fable measurement | Baseline | Skill |
+|---|---:|---:|
 | Elapsed seconds | 25.132 | 18.155 |
 | Input including cache tokens | 4281 | 5568 |
 | Output tokens | 1838 | 964 |
