@@ -80,16 +80,6 @@ lean-thinking/
 └── README.md
 ```
 
-## What the tests showed
-
-We tested Fable 5.1 and GPT-6 Astra on three small tasks, with and without the skill. Both models passed the same core checks in both conditions.
-
-In the recorded Fable test batch, output tokens fell from 1,838 to 964 with the skill. Input tokens, including cached tokens, rose from 4,281 to 5,568. Total input plus output tokens therefore increased. Astra's token usage was not available.
-
-This small test does not prove token savings. Passing the same core checks also does not prove that output quality stays the same on every task. An extra stress test found a bug in both Fable versions.
-
-See the [full test results and limits](eval/RESULTS.md).
-
 ## Limits
 
 This skill cannot recover missing evidence, grant permissions, or make risky changes safe. Its result still depends on the agent's tools, available context, and judgment. It does not promise to control private reasoning or reduce token use.

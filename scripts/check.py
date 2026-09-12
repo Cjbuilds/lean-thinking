@@ -19,7 +19,7 @@ REQUIRED_README_TEXT = (
     "$lean-thinking",
     "python3 scripts/check.py",
 )
-REQUIRED_LINKS = {"assets/banner.png", "eval/RESULTS.md"}
+REQUIRED_LINKS = {"assets/banner.png"}
 
 
 def parse_frontmatter(text: str, failures: list[str]) -> tuple[dict[str, str], str]:
