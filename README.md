@@ -2,9 +2,22 @@
 
 # lean-thinking
 
-Lean Thinking is a small skill for AI coding agents that helps them understand the real task, make one sufficient plan, implement the smallest complete solution, and stop after the result is verified.
+Lean Thinking helps AI coding agents stay focused and finish the job. It tells them to plan enough, build what is needed, check the result, and stop.
 
-It is useful when an agent tends to overplan, rebuild working systems, add speculative layers, or declare victory before necessary checks pass. It keeps explicit requirements and approval boundaries intact. Simple tasks stay simple; risky work still gets the evidence, error handling, and testing it needs.
+Use it when an agent spends too long planning, keeps adding extra work, or rebuilds things that already work. Simple tasks stay simple. Risky tasks still get the checks they need.
+
+## How it works
+
+- Understand the task first.
+- Make a simple plan.
+- Reuse what already works.
+- Build only what is needed.
+- Check that it works.
+- Fix any problems found in the task.
+- Stop when it is done and checked.
+- Explain what changed and any remaining limits.
+
+It follows your requirements and asks for permission when needed. It does not skip necessary work just to make the answer shorter.
 
 ## Install
 
@@ -38,7 +51,7 @@ Invoke it by name in a request:
 Use $lean-thinking to add CSV export to this report page.
 ```
 
-The skill asks the agent to inspect the relevant evidence, preserve your constraints, choose one small implementation path, run checks that match the risk, and stop when the requested result is proven.
+The agent reads the relevant code, makes a plan, does the work, and checks the result.
 
 ## Check the package
 
@@ -67,9 +80,15 @@ lean-thinking/
 └── README.md
 ```
 
-## Behavioral evaluation
+## What the tests showed
 
-Tested on three matched tasks with Fable 5.1 and GPT-6 Astra, with and without the skill. See the [evaluation method, results, and limits](eval/RESULTS.md). The evaluation is bounded evidence from its documented cases, models, and conditions; it does not prove general improvement or guarantee a correct result.
+We tested Fable 5.1 and GPT-6 Astra on three small tasks, with and without the skill. Both models passed the same core checks in both conditions.
+
+In the recorded Fable test batch, output tokens fell from 1,838 to 964 with the skill. Input tokens, including cached tokens, rose from 4,281 to 5,568. Total input plus output tokens therefore increased. Astra's token usage was not available.
+
+This small test does not prove token savings. Passing the same core checks also does not prove that output quality stays the same on every task. An extra stress test found a bug in both Fable versions.
+
+See the [full test results and limits](eval/RESULTS.md).
 
 ## Limits
 
